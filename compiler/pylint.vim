@@ -64,14 +64,15 @@ if exists(":CompilerSet") != 2          " older Vim always used :setlocal
   command -nargs=* CompilerSet setlocal <args>
 endif
 
-" We should echo filename because pylint truncates .py
-" If someone know better way - let me know :) 
-CompilerSet makeprg=(echo\ '[%]';\ pylint\ -r\ y\ %)
+" Set the pylint output to parsable
+CompilerSet makeprg=(pylint\ -f\ parseable\ -r\ y\ %\)
 
-" We could omit end of file-entry, there is only one file
-" %+I... - include code rating information
+" Parse the pylint error messages
+CompilerSet efm=%f:%l:\ [%t%[%^\]]%#]\ %m
+" Show evaultion value
+CompilerSet efm+=%+GYour\ code%m
 " %-G... - remove all remaining report lines from quickfix buffer
-CompilerSet efm=%+P[%f],%t:\ %#%l:%m,%Z,%+IYour\ code%m,%Z,%-G%.%#
+CompilerSet efm+=%-G%.%#
 
 if g:pylint_onwrite
     augroup python
